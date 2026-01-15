@@ -1,7 +1,5 @@
 <?php
 
-echo "Hello from PHP-X!\n";
-
-sleep(1);
-
-echo "PHP-X is running 🚀\n";
+Core::setInterval(function () {
+    echo "Tick from PHP-X ⏱️\n";
+}, 1000);
