@@ -1,5 +1,14 @@
 <?php
 
+
+// This is a simple test of setInterval functionality in PHP-X
+// Core::setInterval(function () {
+//     echo "Tick from PHP-X ⏱️\n";
+// }, 1000);
+
+
+// DOM::load(__DIR__ . "/index.html");
+
 Core::setInterval(function () {
-    echo "Tick from PHP-X ⏱️\n";
-}, 1000);
+    DOM::setText("#title", "Hello from PHP-X at " . date("H:i:s"));
+}, 2000);

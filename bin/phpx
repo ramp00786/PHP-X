@@ -5,6 +5,13 @@
 // this file is create a event loop and execute the provided .xphp script.
 require_once __DIR__ . '/../src/Core.php';
 
+// Load DOM module for HTML manipulation
+require_once __DIR__ . '/../src/DOM.php';
+
+// Load Server module for HTTP server functionality
+require_once __DIR__ . '/../src/Server.php';
+
+
 if ($argc < 2) {
     echo "Usage: phpx <file.xphp>\n";
     exit(1);
