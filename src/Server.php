@@ -22,39 +22,66 @@ class Server
 
             $request = fread($client, 1024);
 
-           
+            // HTTP method & path nikaalo
+            $lines = explode("\n", $request);
+            $firstLine = $lines[0]; // e.g. GET / HTTP/1.1
 
-            // agar button submit hua
-            if (str_contains($request, "POST /click")) {
-                echo "-> Button clicked from browser\n";
+            [$method, $path] = explode(' ', $firstLine);
 
-                DOM::setText("#title", "Hello from PHP-X !!");
-
-                $responseBody = DOM::$html;
-            } else {
-                 // favicon request ignore karo
-                if (str_contains($request, "GET /favicon.ico")) {
-                    $response =
-                        "HTTP/1.1 204 No Content\r\n" .
-                        "Connection: close\r\n\r\n";
-
-                    fwrite($client, $response);
-                    fclose($client);
-                    continue;
-                }
-                echo "REQUEST RECEIVED\n";
-                DOM::load(__DIR__ . '/../examples/index.html');
-                $responseBody = DOM::$html;
+            // favicon special case
+            if ($path === '/favicon.ico') {
+                $response = "HTTP/1.1 204 No Content\r\n\r\n";
+                fwrite($client, $response);
+                fclose($client);
+                continue;
             }
 
+            // Router dispatch
+            $body = Router::dispatch($method, $path);
+
+            // HTTP response
             $response =
                 "HTTP/1.1 200 OK\r\n" .
                 "Content-Type: text/html\r\n" .
-                "Content-Length: " . strlen($responseBody) . "\r\n\r\n" .
-                $responseBody;
+                "Content-Length: " . strlen($body) . "\r\n\r\n" .
+                $body;
 
             fwrite($client, $response);
             fclose($client);
+
+           
+
+            // // agar button submit hua
+            // if (str_contains($request, "POST /click")) {
+            //     echo "-> Button clicked from browser\n";
+
+            //     DOM::setText("#title", "Hello from PHP-X !!");
+
+            //     $responseBody = DOM::$html;
+            // } else {
+            //      // favicon request ignore karo
+            //     if (str_contains($request, "GET /favicon.ico")) {
+            //         $response =
+            //             "HTTP/1.1 204 No Content\r\n" .
+            //             "Connection: close\r\n\r\n";
+
+            //         fwrite($client, $response);
+            //         fclose($client);
+            //         continue;
+            //     }
+            //     echo "REQUEST RECEIVED\n";
+            //     DOM::load(__DIR__ . '/../examples/index.html');
+            //     $responseBody = DOM::$html;
+            // }
+
+            // $response =
+            //     "HTTP/1.1 200 OK\r\n" .
+            //     "Content-Type: text/html\r\n" .
+            //     "Content-Length: " . strlen($responseBody) . "\r\n\r\n" .
+            //     $responseBody;
+
+            // fwrite($client, $response);
+            // fclose($client);
         }
     }
 }

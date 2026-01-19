@@ -11,6 +11,11 @@ require_once __DIR__ . '/../src/DOM.php';
 // Load Server module for HTTP server functionality
 require_once __DIR__ . '/../src/Server.php';
 
+// Load Router module for routing HTTP requests
+require_once __DIR__ . '/../src/Router.php';
+// Load View module for rendering views
+require_once __DIR__ . '/../src/View.php';
+
 
 if ($argc < 2) {
     echo "Usage: phpx <file.xphp>\n";
