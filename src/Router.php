@@ -20,15 +20,18 @@ class Router
     }
 
     // incoming request resolve
-    public static function dispatch(string $method, string $path)
+    public static function dispatch(Request $req): Response
     {
+        $method = $req->method();
+        $path   = $req->path();
+
         if (isset(self::$routes[$method][$path])) {
-            return call_user_func(self::$routes[$method][$path]);
+            return call_user_func(self::$routes[$method][$path], $req);
         }
 
-        // route not found
-        return self::notFound();
+        return Response::html("<h1>404 – Not Found</h1>")->status(404);
     }
+
 
     private static function notFound()
     {

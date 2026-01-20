@@ -4,17 +4,22 @@
 // This is the entry point for the PHP-X runtime environment.
 // this file is create a event loop and execute the provided .xphp script.
 require_once __DIR__ . '/../src/Core.php';
-
 // Load DOM module for HTML manipulation
 require_once __DIR__ . '/../src/DOM.php';
-
-// Load Server module for HTTP server functionality
-require_once __DIR__ . '/../src/Server.php';
-
+// Load Request and Response modules for HTTP request/response handling
+require_once __DIR__ . '/../src/Request.php';
+// Load Response module for HTTP response handling
+require_once __DIR__ . '/../src/Response.php';
 // Load Router module for routing HTTP requests
 require_once __DIR__ . '/../src/Router.php';
 // Load View module for rendering views
 require_once __DIR__ . '/../src/View.php';
+// Load Server module for HTTP server functionality
+require_once __DIR__ . '/../src/Server.php';
+
+
+
+
 
 
 if ($argc < 2) {

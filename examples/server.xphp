@@ -1,11 +1,14 @@
 <?php
 
-Router::get('/', function () {
-    return View::render(__DIR__ . '/index.html');
+
+Router::get('/', function (Request $req) {
+    return Response::html(
+        View::render(__DIR__ . '/index.html')
+    );
 });
 
-Router::post('/click', function () {
-    return View::text("Hello from PHP-X !!");
+Router::post('/click', function (Request $req) {
+    return Response::html("<h1>Hello from PHP-X !!</h1><a href='/'>Back</a>");
 });
 
 Server::start(8080);
