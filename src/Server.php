@@ -27,7 +27,11 @@ class Server
                 continue;
             }
 
-            $res = Router::dispatch($req);
+            // Middleware handle karo aur response bhejo
+            $res = Middleware::handle($req, function (Request $req) {
+                return Router::dispatch($req);
+            });
+
             fwrite($client, $res->send());
             fclose($client);
         }

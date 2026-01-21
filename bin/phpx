@@ -10,6 +10,8 @@ require_once __DIR__ . '/../src/DOM.php';
 require_once __DIR__ . '/../src/Request.php';
 // Load Response module for HTTP response handling
 require_once __DIR__ . '/../src/Response.php';
+// Load Middleware module for handling middleware stack
+require_once __DIR__ . '/../src/Middleware.php';
 // Load Router module for routing HTTP requests
 require_once __DIR__ . '/../src/Router.php';
 // Load View module for rendering views

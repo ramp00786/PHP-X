@@ -43,4 +43,10 @@ class Response
 
         return $response;
     }
+
+    public function header(string $key, string $value): self
+    {
+        $this->headers[$key] = $value;
+        return $this;
+    }
 }

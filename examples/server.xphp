@@ -1,6 +1,38 @@
 <?php
 
 
+Middleware::add(function (Request $req, callable $next) {
+    $start = microtime(true);
+
+    $response = $next($req);
+
+    $time = round((microtime(true) - $start) * 1000, 2);
+    echo "[TIME] {$req->method()} {$req->path()} took {$time}ms\n";
+
+    return $response;
+});
+
+
+Middleware::add(function (Request $req, callable $next) {
+    if ($req->path() === '/admin') {
+        return Response::html("<h1>403 Forbidden</h1>")->status(403);
+    }
+
+    return $next($req);
+});
+
+
+Middleware::add(function (Request $req, callable $next) {
+    $res = $next($req);
+
+    // Example: security header
+    $res->header('X-Powered-By', 'PHP-X');
+
+    return $res;
+});
+
+
+
 Router::get('/', function (Request $req) {
     return Response::html(
         View::render(__DIR__ . '/index.html')
@@ -10,6 +42,12 @@ Router::get('/', function (Request $req) {
 Router::post('/click', function (Request $req) {
     return Response::html("<h1>Hello from PHP-X !!</h1><a href='/'>Back</a>");
 });
+
+
+Router::get('/admin', function () {
+    return Response::html("<h1>Admin</h1>");
+});
+
 
 Server::start(8080);
 
