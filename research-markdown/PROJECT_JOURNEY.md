@@ -90,6 +90,9 @@ php-x/
   - Day 5 — DOM & View Abstraction  
   - Day 6 — Router System  
   - Day 7 — Request / Response Design  
+  - Day 8 — Middleware Pipeline
+  - Day 9 — Advanced Middleware & Request Lifecycle
+  - Day 10 — Lifecycle Freeze & Native Boundaries
 
 ---
 
@@ -391,6 +394,45 @@ Functional middleware with `array_reduce()` provides:
 
 ---
 
+## Day 9 — Advanced Middleware & Request Lifecycle
+
+### Objective
+Take the Day 8 middleware foundation from a proof-of-concept to a framework-grade request lifecycle with clear patterns for:
+
+- Before/after execution (timing, logging)
+- Request blocking (auth/rate limiting)
+- Response modification (security headers, CORS, cookies)
+
+### Files Created / Modified
+
+- `src/Response.php` — Added `header()` so middleware can modify response headers (modified)
+- `examples/server.xphp` — Demonstrated timing, blocking, and header middleware patterns (modified)
+- `src/Middleware.php` — No changes (intentionally kept Day 8 pipeline) (unchanged)
+
+### Work Done
+
+- Validated that the Day 8 `array_reduce()` middleware dispatcher already supports advanced enterprise patterns
+- Added response header mutation support via a fluent `Response::header()` method
+- Demonstrated three canonical middleware patterns:
+  - Timing middleware (before + after)
+  - Blocking middleware (short-circuit return)
+  - Response modification middleware (headers)
+- Reinforced that the middleware signature is an API contract for future native/runtime work:
+  - `function (Request $req, callable $next): Response`
+
+### Alternatives Considered
+
+- Recursive/queue-based dispatcher instead of `array_reduce()` (rejected — no benefit worth changing working core)
+- Immutable Response with cloning (rejected — would make middleware verbose and slower)
+- Class-based middleware (deferred — can be added later without breaking callable middleware)
+
+### Reason for Final Choice
+Day 9 prioritizes stability: demonstrate capabilities without rewriting a correct, minimal pipeline. This locks the middleware lifecycle and response transformation semantics for native integration.
+
+**See [daily-progress/day9.md](daily-progress/day9.md) for detailed analysis.**
+
+---
+
 ## Current Architectural State
 
 PHP-X currently includes:
@@ -411,3 +453,73 @@ This is a **platform foundation**, not a finished product.
 
 This file will be updated daily.
 Future sections will extend this log without rewriting history.
+
+---
+
+## Day 10 — Lifecycle Freeze & Native Boundaries
+
+### Decisions Frozen
+
+- Request lifecycle is immutable
+- Middleware contract is fixed: `function (Request, callable $next): Response`
+- Middleware dispatch uses `array_reduce()`
+- Server acts only as transport
+- Router, Middleware, Request, Response APIs are stable
+
+### Event Loop Specification
+
+The following APIs are considered final on the PHP side:
+
+- `Core::setTimeout(callable, int)`
+- `Core::setInterval(callable, int)`
+- `Core::clearTimer(int)`
+- `Core::run()`
+
+Current PHP implementation is a reference only. Native implementations may replace internals without API changes.
+
+### Native Boundaries Defined
+
+**Will move to native (C/C++/Rust):**
+
+- Event loop internals
+- Timers and IO polling
+- OS-level integrations
+
+**Will remain in PHP:**
+
+- Request / Response
+- Middleware
+- Router
+- Controller logic
+- Application code
+
+### Explicit Non-Goals (for now)
+
+- Performance optimization
+- Multithreading
+- Promise/Fiber abstractions
+- OS kernel development
+
+These are postponed by design to protect architectural stability.
+
+### Freeze Checklist (Self-verification)
+
+Aaj ke end pe khud se ye checklist tick karo:
+
+- [ ] Request mutation impossible
+- [ ] Middleware return enforced
+- [ ] Event loop APIs documented as frozen
+- [ ] Native boundaries tagged
+- [ ] PROJECT_JOURNEY.md updated
+
+Agar sab ✔ hai → **Day 10 DONE**
+
+### 🧠 Important Mentor Note
+
+Freezing architecture is harder than adding features. Aaj aapne temptation resist ki — ye maturity ka sign hai.
+
+Kal ke baad:
+
+- Native work safe hoga
+- Desktop embedding predictable hoga
+- Research paper credible hoga

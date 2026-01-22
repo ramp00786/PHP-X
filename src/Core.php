@@ -1,6 +1,16 @@
 <?php
 
 /**
+ * EVENT LOOP SPEC (REFERENCE IMPLEMENTATION)
+ *
+ * API in this class is FROZEN.
+ * Internal implementation WILL be replaced by native code.
+ *
+ * Do NOT add new async primitives here.
+ */
+
+
+/**
  * Core class for managing asynchronous timers and event loop
  * Provides functionality similar to JavaScript's setInterval
  */
@@ -17,6 +27,7 @@ class Core
      * @param callable $callback Function to execute repeatedly
      * @param int $ms Interval in milliseconds
      */
+    // @native-boundary: event-loop
     public static function setInterval(callable $callback, int $ms)
     {
         self::$timers[] = [
@@ -30,6 +41,7 @@ class Core
      * Starts the event loop to execute registered timers
      * Runs indefinitely until interrupted
      */
+    // @native-boundary: event-loop
     public static function run()
     {
         // Infinite loop to process timers

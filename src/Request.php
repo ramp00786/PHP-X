@@ -1,4 +1,8 @@
 <?php
+/**
+ * Request is IMMUTABLE by design.
+ * Do not add setters. Create a new Request if needed.
+ */
 
 class Request
 {
@@ -30,5 +34,9 @@ class Request
     public function body(): string
     {
         return $this->body;
+    }
+    final public function __set($name, $value)
+    {
+        throw new \LogicException("Request is immutable");
     }
 }

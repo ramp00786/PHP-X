@@ -16,13 +16,21 @@ class Middleware
      * Run middleware stack
      */
     
-    public static function handle(Request $req, callable $core)
+    public static function handle(Request $req, callable $core): Response
     {
         $dispatcher = array_reduce(
             array_reverse(self::$stack),
             function ($next, $middleware) {
-                return function (Request $req) use ($middleware, $next) {
-                    return $middleware($req, $next);
+                return function (Request $req) use ($middleware, $next): Response {
+                    $res = $middleware($req, $next);
+
+                    if (!$res instanceof Response) {
+                        throw new \LogicException(
+                            "Middleware must return instance of Response"
+                        );
+                    }
+
+                    return $res;
                 };
             },
             $core
@@ -30,5 +38,6 @@ class Middleware
 
         return $dispatcher($req);
     }
+
 
 }
