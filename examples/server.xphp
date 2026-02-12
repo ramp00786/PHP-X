@@ -32,32 +32,59 @@
 // });
 
 
-Middleware::add(function (Request $req, callable $next) {
-    $t1 = Native::nowMs();
-    $res = $next($req);
-    $t2 = Native::nowMs();
+// Middleware::add(function (Request $req, callable $next) {
+//     $t1 = Native::nowMs();
+//     $res = $next($req);
+//     $t2 = Native::nowMs();
 
-    echo "[NATIVE TIMER] " . ($t2 - $t1) . "ms\n";
-    return $res;
+//     echo "[NATIVE TIMER] " . ($t2 - $t1) . "ms\n";
+//     return $res;
+// });
+
+// Middleware::add(function (Request $req, callable $next) {
+//     if ($req->path() === '/fail') {
+//         throw new RuntimeException("Middleware failed");
+//     }
+//     return $next($req);
+// });
+
+
+// Middleware::add(function (Request $req, callable $next) {
+//     Logger::info("Request: {$req->method()} {$req->path()}");
+//     return $next($req);
+// });
+
+
+// Router::get('/', function (Request $req) {
+//     return Response::html(
+//         View::render(__DIR__ . '/index.html')
+//     );
+// });
+
+// Router::post('/click', function (Request $req) {
+//     return Response::html("<h1>Hello from PHP-X !!</h1><a href='/'>Back</a>");
+// });
+
+
+// Router::get('/admin', function () {
+//     return Response::html("<h1>Admin</h1>");
+// });
+
+
+// Router::get('/boom', function () {
+//     throw new Exception("Something exploded");
+// });
+
+// Router::post('/submit', function (Request $req) {
+//     return Response::text("Hello " . $req->input('name'));
+// });
+
+Router::get('/user/{id}', function (Request $req) {
+    return Response::text("User ID: " . $req->param('id'));
 });
 
 
 
-Router::get('/', function (Request $req) {
-    return Response::html(
-        View::render(__DIR__ . '/index.html')
-    );
-});
 
-Router::post('/click', function (Request $req) {
-    return Response::html("<h1>Hello from PHP-X !!</h1><a href='/'>Back</a>");
-});
-
-
-Router::get('/admin', function () {
-    return Response::html("<h1>Admin</h1>");
-});
-
-
-Server::start(8080);
+Server::start(Config::get('server.port', 8080));
 

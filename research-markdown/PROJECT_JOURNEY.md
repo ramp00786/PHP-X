@@ -93,6 +93,7 @@ php-x/
   - Day 8 — Middleware Pipeline
   - Day 9 — Advanced Middleware & Request Lifecycle
   - Day 10 — Lifecycle Freeze & Native Boundaries
+  - Day 11 — Native Bridge Proof (FFI)
 
 ---
 
@@ -523,3 +524,32 @@ Kal ke baad:
 - Native work safe hoga
 - Desktop embedding predictable hoga
 - Research paper credible hoga
+
+---
+
+## Day 11 — Native Bridge Proof (FFI)
+
+### Objective
+Cross the native boundary **once** in a safe, reversible way — without changing the frozen PHP architecture.
+
+This day is about proving the bridge concept:
+PHP → native call → return value → middleware lifecycle intact.
+
+### What was added
+
+- `src/Native.php` — isolated native boundary wrapper
+- `native/timer.c` — minimal native demo function (`current_time_ms()`)
+
+### Why FFI (and why it’s safe)
+
+- No extension writing, fast iteration
+- Bridge shape remains reusable for future C-extension/Rust bridge
+- Native is optional: system still runs if native lib/FFI isn’t available (fallback path)
+
+### Spec validation
+
+- Middleware lifecycle remains unchanged
+- Request/Response/Router APIs untouched
+- Event-loop spec untouched (Day-10 freeze respected)
+
+**See [daily-progress/day11.md](daily-progress/day11.md) for detailed analysis.**
